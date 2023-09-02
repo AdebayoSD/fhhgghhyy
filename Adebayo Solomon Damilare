@@ -1,0 +1,219 @@
+USE AdventureWorks2012;
+
+-- A QUERY TO EXTRACT ALL THE EMPLOYEES PRESENTLY WORKING IN THE COMPANY
+SELECT *
+FROM [HumanResources].[Employee]
+
+--A QUERY TO EXTRACT SINGLE MALE EMPLOYEES
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate]
+FROM [HumanResources].[Employee]
+WHERE [Gender] = 'M' AND [MaritalStatus] = 'S';
+
+-- A QUERY TO EXTRACT FEMALE EMPLOYEES
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate]
+FROM [HumanResources].[Employee] 
+WHERE [Gender] <> 'M'
+
+--A QUERY TO GET THE EMPLOYEES WITH MORE THAN 50 SICK LEAVE HOURS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [SickLeaveHours] < 50
+
+-- WRITE A QUERY TO GET THE MALE SINGLE EMPLOYEE WITH MORE THAN 50 SICK LEAVE HOURS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [Gender] = 'M' AND [MaritalStatus] = 'S' AND [SickLeaveHours] > 50
+
+-- GET THE LIST OF EMPLOYEES WITH MORE THAN 50 SICK LEAVE HRS OR MORE THAN 50 VACATION HRS
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours],
+		[VacationHours]
+FROM [HumanResources].[Employee]
+WHERE [VacationHours] > 50 OR [SickLeaveHours] > 50
+
+-- A QUERY TO GET A LIST OF EMPLOYEES WITH SICKLEAVE HOURS BETWEEN 50 AND 70
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [SickLeaveHours] BETWEEN 50 AND 70;
+
+-- A QUERY TO GET A LIST OF EMPLOYEES AND THIER SICKLEAVE HOURS ARRANGED IN DESCENDING ORDER
+SELECT [BusinessEntityID],
+		[JobTitle],
+		[BirthDate],
+		[MaritalStatus],
+		[Gender],
+		[HireDate],
+		[SickLeaveHours]
+FROM [HumanResources].[Employee]
+ORDER BY [SickLeaveHours] ASC
+
+
+-- A QUERY TO SHOW THE UNIQUE JOB TITLES
+SELECT DISTINCT [JobTitle]
+FROM [HumanResources].[Employee]
+
+-- A QUERY TO GET THE BOTTM 50 EMPLOYEES IN TERMS OF VACATION HOURS
+SELECT TOP 50 [BusinessEntityID],
+			[JobTitle],
+			[Gender],
+			[MaritalStatus],
+			[VacationHours]
+FROM [HumanResources].[Employee]
+ORDER BY [VacationHours] ASC
+
+
+-- EMPLOYEE COUNT BY JOB TITLE
+SELECT [JobTitle],
+		COUNT([JobTitle]) AS Employee_Count
+FROM [HumanResources].[Employee]
+GROUP BY [JobTitle]
+ORDER BY Employee_Count DESC
+
+
+-- EMPLOYEE COUNT BY GENDER
+SELECT [Gender],
+		COUNT([Gender]) AS Employee_Count
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY Employee_Count DESC
+
+-- SUM OF VACATION HOURS BY MARITAL STATUS
+SELECT [MaritalStatus],
+		SUM([VacationHours]) AS Sum_Vacation_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [MaritalStatus]
+ORDER BY Sum_Vacation_Hrs DESC
+
+-- SUM SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	SUM([SickLeaveHours]) AS SUM_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY SUM_Sickleave_Hrs DESC
+
+-- AVERAGE SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	AVG([SickLeaveHours]) AS AVG_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY AVG_Sickleave_Hrs DESC
+
+-- SUM SICK LEAVE HOURS FOR BOTH MALE AND FEMALE
+SELECT [Gender],
+	SUM([SickLeaveHours]) AS SUM_Sickleave_Hrs
+FROM [HumanResources].[Employee]
+GROUP BY [Gender]
+ORDER BY SUM_Sickleave_Hrs DESC
+
+-- CALCULATE TOTAL EMPLOYEE COUNT, TOTAL SICK LEAVE HOUIRS AND TOTAL VACATION HOUSE
+SELECT COUNT([JobTitle]) AS TOTAL_HEADCOUNT, 
+		SUM( [SickLeaveHours])  AS TOTAL_SICKLEAVE_HRS,
+		SUM([VacationHours]) AS TOTAL_VACATION_HRS,
+		MIN([VacationHours])/ MAX( [VacationHours])  AS VARATION_HRS		 
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE NUMBER OF YEARS EACH EMPLOYEE HAS WORKED
+SELECT [BusinessEntityID],
+	[JobTitle],
+	DATEDIFF(YEAR,[HireDate],GETDATE()) AS YEARS_SERVICE
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE AGE EACH EMPLOYEE 
+SELECT [BusinessEntityID],
+	[JobTitle],
+	DATEDIFF(YEAR,[BirthDate],GETDATE()) AS AGE
+FROM [HumanResources].[Employee]
+
+--CALCULATE THE AGE OF EACH EMPLOYEE AT HIRE, ACTUAL AGE AND YEARS OF ACTIVE SERVICE
+SELECT [BusinessEntityID],
+		[JobTitle],
+		DATEDIFF(YEAR,[BirthDate],[HireDate]) AS AGE_AT_HIRE,
+		DATEDIFF(YEAR, [BirthDate], GETDATE()) AS PRESENT_AGE,
+		DATEDIFF(YEAR, [BirthDate], GETDATE()) - DATEDIFF(YEAR,[BirthDate],[HireDate]) AS YRS_OF_SERVICE
+FROM [HumanResources].[Employee]
+
+
+SELECT [BusinessEntityID], 
+	[JobTitle],
+	DATENAME(QUARTER,[HireDate]) AS HIRE_DAY
+FROM [HumanResources].[Employee]
+
+
+SELECT [BusinessEntityID],
+	LOWER([FirstName]) AS First_Name,
+	LOWER([MiddleName]) AS Middle_Name,
+	LOWER([LastName])  AS Last_Name,
+	CONCAT([FirstName],' ',[MiddleName],' ',[LastName]) AS Full_Name,
+	LEN([FirstName]) AS Number_Characters
+FROM [Person].[Person]
+
+--A QUERY TO GET THE LIST OF EMPLOYEES WITH VACATION HOURS ABOVE THE AVERAGE VACATION HOURS
+SELECT [BusinessEntityID],
+	[JobTitle],
+	[VacationHours]
+FROM [HumanResources].[Employee]
+WHERE [VacationHours] > (
+		SELECT AVG([VacationHours])
+		FROM [HumanResources].[Employee] )
+
+-- A QUERY TO GET THE LIST OF ALL THE EMPLOYEES WITH SICKLEAVE HOURS LESS THAN AVERAGE SICKLEAVE HOURS 
+SELECT [BusinessEntityID],
+[JobTitle],
+[SickLeaveHours]
+FROM [HumanResources].[Employee]
+WHERE [SickLeaveHours] <(
+	SELECT AVG([SickLeaveHours])
+	FROM [HumanResources].[Employee])
+
+-- A QUERY THAT SHOWS THE LIST OF PRODUCTS ABOVE THE AVERAGE LIST PRICE
+
+SELECT [ProductID],
+	[Name],
+	[ListPrice]
+FROM [Production].[Product]
+WHERE [ListPrice] >(
+		SELECT AVG([ListPrice])
+		FROM [Production].[Product]);
+
+
+-- A QUERY TO CALCULATE THE AVERAGE LIST PRICE OF ALL THE WHITE PRODUCTS
+
+SELECT AVG([ListPrice]) AS AVG_WHITE
+FROM [Production].[Product]
+WHERE [ProductID] IN (
+		SELECT [ProductID]
+		FROM [Production].[Product]
+		WHERE [Color] = 'WHITE')
